@@ -1,0 +1,22 @@
+<!DOCTYPE html><html lang="en">
+<head>
+    <meta charset="UTF-8"><title>Focus</title>
+    <style>
+        .error { border: 2px solid red; }
+    </style>
+</head>
+<body onload="validate()">
+<label for="email">Enter email:</label>
+<input id="email" type="text"/>
+<script>
+    function addItem() {
+        let text = document.getElementById('newItemText').value;
+        let li = document.createElement("li");
+        li.appendChild(document.createTextNode(text));
+        document.getElementById("items").appendChild(li);
+        document.getElementById('newItemText').value = '';
+    }
+</script>
+</body>
+</html>
+
