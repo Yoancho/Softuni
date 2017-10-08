@@ -1,0 +1,16 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "description": "",
+  "main": "Debugging.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node" : "7.10.0",
+    "npm" : "4.2.0"
+
+  },
+  "author": "YTI",
+  "license": "MIT"
+}
