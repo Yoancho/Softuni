@@ -1,0 +1,7 @@
+hiddenTrap
+Now the ultimate hiddenTrap HIDDENTR just some text
+who said the message couldn't be contained in the key
+or it could be this HIDDENTRAP, HIDDENTRAP HIDDENTRA
+some more tests this one is wrong (HIDDENTRAP HIDDENTRA)
+now with some spaces HIDDENTRAP         HIDDENTRA  HIDDENTRAP  HIDDENTR
+hiddenTrap HiddenTRA, hiddenTrap HIDDENTRA

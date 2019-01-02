@@ -1,0 +1,19 @@
+   let regex = /\b([0-9]{1,2})-([A-Z][a-z]{2})-([0-9]{4})\b/g;
+    let exec;
+    let dates = [];
+
+    for (var str of arr) {
+        //.match vs .exec
+        // let date1 = str.match(regex); // no groups string.regex, прилага се върху целия стринг, връща масив
+        //let date2 = regex.exec(str);  // regex.exec(string) връща множество от съвпадения на стъпки по индекс
+
+        //while (regex.exec(str) != null) {
+        while (exec = regex.exec(str)) {
+            //console.log(exec);
+            dates.push(exec[0] + ` (Day: ${exec[1]}, Month: ${exec[2]}, Year: ${exec[3]})`);
+        //}
+        }
+
+    }
+    console.log(dates.join('\n'));
+}

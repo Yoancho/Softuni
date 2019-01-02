@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monthly Calendar</title>
+    <style>
+        .prev-month, .next-month {
+            color: #CCC
+        }
+
+        .today {
+            font-weight: bold;
+            background: #DDD;
+        }
+
+        .title {
+            background: #AAAAFF;
+            margin: 10px 0;
+            padding: 5px
+        }
+
+        table {
+            border: 1px solid #CCC;
+        }
+
+        td {
+            text-align: center;
+        }
+
+        #calendarCode {
+            width: 100%;
+        }
+    </style>
+    <script>
+        function calendar([day, month, year]) {
+            // TODO: return the HTML text holding the calendar table
+
+
+            let date = new Date(year, month - 1, day);
+
+            let prevMonthEnd = new Date(year, month -1, 0).getDate();
+            let currMonthEnd = new Date(year, month , 0).getDate();
+
+
+            //let prevMonthDayOfWeek = new Date(year, month-1, prevMonthEnd).getDay();
+            let prevMonthSunday =  function (year, month, endDay) {
+
+            };
+
+
+            let cday = prevMonthEnd - prevMonthSunday ;
+            let currentMonthDay = 1;
+            let nextMonthDay = 1;
+            let result = '<table>\n';
+            result += ` <tr><th>Sun</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th></tr>` + '<br>';
+            if (false) {
+
+            } else {
+                for (let i = 0; i < 5; i++) {
+                    result += ' <tr>';
+                    for (let j = 0; j < 7; j++) {
+                        if (cday <= prevMonthEnd) {
+                            result += `    <td class="prev-month">${cday}</td>`;
+                            cday++;
+                        } else if (currentMonthDay === currMonthEnd) {
+                            result += `    <td class="next-month">${nextMonthDay}</td>`;
+                            nextMonthDay++;
+                        } else if (cday === prevMonthEnd + 1) {
+                            currentMonthDay++;
+                            result += `    <td>${currentMonthDay}</td>`;
+
+                        }
+
+
+                    }
+                    result += ' </tr>' + '<br>';
+                }
+                result += '</table>'
+                return result;
+
+            }
+        }
+
+   //     '---------------------------------------------------------------------------------------------------'
+        (() => {
+            'use strict'
+
+            // lastWeekDaysOfYear :: Int -> Int -> [Date]
+            const lastWeekDaysOfYear = (iWeekDay, y) => [
+                31,
+                0 === y % 4 && 0 !== y % 100 || 0 === y % 400 ? 29 : 28,
+                31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+            ]
+                .map((d, m) =>
+                    new Date(Date.UTC(
+                        y, m, d - ((new Date(Date.UTC(y, m, d))
+                        .getDay() + (7 - iWeekDay)) % 7))));
+
+            const days = {
+                sunday: 0,
+                monday: 1,
+                tuesday: 2,
+                wednesday: 3,
+                thursday: 4,
+                friday: 5,
+                saturday: 6
+            };
+
+            // GENERIC FUNCTIONS
+
+            // curry :: ((a, b) -> c) -> a -> b -> c
+            const curry = f => a => b => f(a, b);
+
+            // isoDateString :: Date -> String
+            const isoDateString = dte =>
+                dte.toISOString()
+                    .substr(0, 10);
+
+            // range :: Int -> Int -> [Int]
+            const range = (m, n) =>
+                Array.from({
+                    length: Math.floor(n - m) + 1
+                }, (_, i) => m + i);
+
+            // transpose :: [[a]] -> [[a]]
+            const transpose = lst =>
+                lst[0].map((_, iCol) =>
+                    lst.map(row => row[iCol]));
+
+            // TEST
+            return transpose(
+                range(2015, 2019)
+                    .map(curry(lastWeekDaysOfYear)(days.sunday))
+            )
+                .map(row => row
+                    .map(isoDateString)
+                    .join('\t'))
+                .join('\n');
+        })();
+ //       '=================================================================================================='
+
+    </script>
+</head>
+
+<body>
+Day: <input id="day" type="number" value="24"/>
+Month: <input id="month" type="number" value="12"/>
+Year: <input id="year" type="number" value="2012"/>
+<input type="button" value="Show"
+       onclick="let calendarHTML =
+            calendar([document.getElementById('day').value,
+                document.getElementById('month').value,
+                document.getElementById('year').value]);
+            document.getElementById('calendar').innerHTML = calendarHTML;
+            document.getElementById('calendarCode').innerText = calendarHTML"/>
+<div class="title">Calendar:</div>
+<div id="calendar">Calendar will be shown here</div>
+<div class="title">HTML:</div>
+<textarea rows="12" id="calendarCode"></textarea>
+</body>
+
+</html>

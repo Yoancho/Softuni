@@ -1,0 +1,3 @@
+In this text the specialKey helloworld1 is correct, but
+the following specialKey $HelloWorl#d and spEcIaLKEy HOLLOWORLD1 are not, while
+SpeCIaLkeY   som22eth4in and SPECIALKEY 33443344 are!

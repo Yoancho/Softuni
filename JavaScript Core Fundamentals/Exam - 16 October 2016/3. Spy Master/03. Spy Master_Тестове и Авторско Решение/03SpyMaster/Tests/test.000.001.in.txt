@@ -1,0 +1,4 @@
+specialKey
+In this text the specialKey HELLOWORLD! is correct, but
+the following specialKey $HelloWorl#d and spEcIaLKEy HOLLOWORLD1 are not, while
+SpeCIaLkeY   SOM%%ETH$IN and SPECIALKEY ##$$##$$ are!

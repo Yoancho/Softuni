@@ -1,0 +1,8 @@
+This should be correct - mixedtests          iscorrectok,
+not this one though remiXedTestS ITSWRONGKIDS
+as is this one mixedtestsos               TOTALL!WRONG
+Now on to the correct ones MIXEDTESTS  whyshoulditfail or this MiXeDtEsTs ok1dok1lok1
+and here are some more
+mIXeDtEsTS jus12t3so11m422st3314ff
+MIXEDtests itsf12nere34lly. mixedTESTS   anotherokone
+this one's wrong tho mixedTest  WRONGTEST
