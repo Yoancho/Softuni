@@ -1,56 +1,33 @@
 function f(str) {
+    surveyRegex = /<svg>[\s\S]*<\/svg>/gm;
+    if (surveyRegex.exec(str)) {
+        let formatRegex = /<svg>[\s\S]*?<cat>[\s\S]*?<text>([\s\S]*?)\[([\s\S]+)\][\s\S]*?<\/text>[\s\S]*?<\/cat>[\s\S]*?<cat>([\s\S]+)<\/cat><\/svg>/gm;
+        let exec = formatRegex.exec(str);
+        if (exec) {
+            let [label, ratings] = [exec[2], exec[3]];
+            let ratingRegex = /<g><val>(\d{1,})<\/val>(\d{1,})<\/g>/g;
+            let ratingsArray = [];
+            let count = 0;
 
-    const surveyDataRegex = /<svg>.+?<\/svg>/gm;
-    const labelRegex = /(?<=[\[]{1})[A-Za-z \-]+(?=[\]]{1})/gm;
-    const surveyHeadingRegex = /(?<=<text>).+(?=[\[])/gm;
-    const sectionsRegex = /<svg>.*?<cat>.*?<text>.*?\[.+\]<\/text>.*?<\/cat>.*?<cat>.*?<\/cat><\/svg>/gm;
-    const ratingAndVoteRegex = /<g><val>([0-9]+)<\/val>([0-9]+)<\/g>/gm;
+            let tmp;
+            while (tmp = ratingRegex.exec(ratings)) {
 
+                ratingsArray.push(tmp[2] * tmp[1]);
+                count += Number(tmp[2]);
+            }
 
-    let surveyData = str.match(surveyDataRegex);
-    if (!surveyData) {
-        console.log('No survey found');
-        return;
-    }
+            let sumOfRating = ratingsArray.reduce((a, b) => a + b);
+            let forPrint = (sumOfRating / count).toFixed(2);
 
-    let section = str.match(sectionsRegex);
-    if (!section) {
-        console.log('Invalid format');
-        return;
-    }
+            forPrint = parseFloat(forPrint);
 
+            console.log(`${label}: ${forPrint}`);
 
-    let label = str.match(labelRegex);
-    let heading = str.match(surveyHeadingRegex);
-    let sumOfrating = 0;
-    let sumOfVote = 0;
-    let ratingAndVote = str.match(ratingAndVoteRegex);
-
-    for (let el of ratingAndVote) {
-        let regex = /(?<=<val>)([0-9]+)(?=<\/val>([0-9]+))/gm;
-        let exec = regex.exec(el);
-        let vote = exec[2];
-        let value = exec[1];
-        if (value < 1 || value > 10 ||
-            vote < 1 || vote > 1000000) {
-            continue;
+        } else {
+            console.log('Invalid format')
         }
-
-        sumOfVote += +vote;
-        sumOfrating += (vote * value);
-
-
-
-    }
-
-    let averageRating = precisionRound(sumOfrating *1.0 / sumOfVote, 2);
-
-    console.log(`${label}: ${averageRating}`);
-
-
-    function precisionRound(number, precision) {
-        var factor = Math.pow(10, precision);
-        return Math.round(number * factor) / factor;
+    } else {
+        console.log('No survey found');
     }
 }
 
