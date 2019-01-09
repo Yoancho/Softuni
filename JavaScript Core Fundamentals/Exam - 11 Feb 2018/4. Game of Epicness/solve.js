@@ -1,86 +1,79 @@
 function f(object, matrix) {
     let result = {};
     for (let obj of object) {
-        let [kingdom, general, army] = [obj.kingdom, obj.general, obj.army];
 
-        if (!result.hasOwnProperty(kingdom)) {
-            result[kingdom] = {};
-            result[kingdom][general] = {};
-            result[kingdom][general]['army'] = +army;
-            result[kingdom][general]['wins'] = 0;
-            result[kingdom][general]['losses'] = 0;
-            result[kingdom]['total_wins'] = 0;
+        if (!result.hasOwnProperty(obj.kingdom)) {
+            result[obj.kingdom] = {};
+            result[obj.kingdom]['all_kingdom_wins'] = 0;
+            result[obj.kingdom]['all_kingdom_losses'] = 0;
+            result[obj.kingdom][obj.general] = {};
+            result[obj.kingdom][obj.general]['army'] = Number(obj.army);
+            result[obj.kingdom][obj.general]['wins'] = 0;
+            result[obj.kingdom][obj.general]['losses'] = 0;
+        } else if (!result[obj.kingdom][obj.general]) {
+            result[obj.kingdom][obj.general] = {};
+            result[obj.kingdom][obj.general]['army'] = Number(obj.army);
+            result[obj.kingdom][obj.general]['wins'] = 0;
+            result[obj.kingdom][obj.general]['losses'] = 0;
         } else {
-            if (!result[kingdom].hasOwnProperty(general)) {
-                result[kingdom][general] = {};
-                result[kingdom][general]['army'] = Number(army);
-                result[kingdom][general]['wins'] = 0;
-                result[kingdom][general]['losses'] = 0;
-            } else {
-                result[kingdom][general]['army'] += +army;
+            result[obj.kingdom][obj.general]['army'] += Number(obj.army);
+        }
+
+    }
+
+
+    for (let el of matrix) {
+        let [AttackingKingdom, AttackingGeneral, DefendingKingdom, DefendingGeneral] = [...el];
+        if (result[AttackingKingdom] !== result[DefendingKingdom]) {
+            let attackingArmy = result[AttackingKingdom][AttackingGeneral]['army'];
+            let defendingArmy = result[DefendingKingdom][DefendingGeneral]['army'];
+            if (attackingArmy !== defendingArmy ) {
+                if (attackingArmy > defendingArmy) {
+                    result[AttackingKingdom]['all_kingdom_wins'] += 1;
+                    result[AttackingKingdom][AttackingGeneral]['wins'] += 1;
+                    result[AttackingKingdom][AttackingGeneral]['army'] = Math.floor(attackingArmy * 1.1);
+                    result[DefendingKingdom]['all_kingdom_losses'] += 1;
+                    result[DefendingKingdom][DefendingGeneral]['losses'] += 1;
+                    result[DefendingKingdom][DefendingGeneral]['army'] = Math.floor(defendingArmy * 0.9);
+                } else if (attackingArmy < defendingArmy) {
+                    result[DefendingKingdom]['all_kingdom_wins'] += 1;
+                    result[DefendingKingdom][DefendingGeneral]['wins'] += 1;
+                    result[DefendingKingdom][DefendingGeneral]['army'] = Math.floor(defendingArmy * 1.1);
+                    result[AttackingKingdom]['all_kingdom_losses'] += 1;
+                    result[AttackingKingdom][AttackingGeneral]['losses'] += 1;
+                    result[AttackingKingdom][AttackingGeneral]['army'] = Math.floor(attackingArmy * 0.9);
+                }
             }
         }
     }
 
-    for (let row of matrix) {
-        let [AttackingKingdom, AttackingGeneral, DefendingKingdom, DefendingGeneral] = row;
-
-        let g1 = result[AttackingKingdom][AttackingGeneral]['army'];
-        let g2 = result[DefendingKingdom][DefendingGeneral]['army'];
-        if (g1 !== g2 && result[AttackingKingdom] !== result[DefendingKingdom]) {
-
-
-            if (g1 > g2) {
-                let winner = Math.floor(g1 * 1.1);
-                let loser = Math.floor(g2 * 0.9);
-                result[AttackingKingdom][AttackingGeneral]['army'] = +winner;
-                result[AttackingKingdom][AttackingGeneral]['wins'] += 1;
-                result[AttackingKingdom]['total_wins'] += 1;
-
-                result[DefendingKingdom][DefendingGeneral]['army'] = +loser;
-                result[DefendingKingdom][DefendingGeneral]['losses'] += 1;
-            } else if (g1 < g2) {
-                let winner = Math.floor(g2 * 1.1);
-                let loser = Math.floor(g1 * 0.9);
-                result[AttackingKingdom][AttackingGeneral]['army'] = +loser;
-                result[AttackingKingdom][AttackingGeneral]['losses'] += 1;
-
-                result[DefendingKingdom][DefendingGeneral]['army'] = +winner;
-                result[DefendingKingdom][DefendingGeneral]['wins'] += 1;
-                result[DefendingKingdom]['total_wins'] += 1;
-            }
-        }
-
-    }
-    let sortedKingdoms = Object.keys(result).sort((k1, k2) => {
-        let diff = result[k2]['total_wins'] - result[k1]['total_wins'];
-        if (diff === 0) {
-            return k1.localeCompare(k2);
-        } else {
-            return diff;
-        }
-    });
-    let sortedGenerals = Object.keys(result[sortedKingdoms[0]]).filter(e => e !== 'total_wins').sort((g1, g2) => {
-        let diff = result[sortedKingdoms[0]][g2]['army'] - result[sortedKingdoms[0]][g1]['army'];
-        if (diff === 0) {
-            let diff2 = result[sortedKingdoms[0]][g2]['wins'] - result[sortedKingdoms[0]][g1]['wins'];
-            if (diff2 === 0) {
-                result[sortedKingdoms[0]][g2]['losses'] - result[sortedKingdoms[0]][g1]['losses'];
+    let sortedKingdoms = Object.keys(result).sort((a, b) => {
+        let diffOfWins = result[b]['all_kingdom_wins'] - result[a]['all_kingdom_wins'];
+        if (diffOfWins === 0) {
+            let diffOfLoses = result[a]['all_kingdom_losses'] - result[b]['all_kingdom_losses'];
+            if (diffOfLoses === 0){
+                return a.localeCompare(b);
             } else {
-                return diff2;
+                return diffOfLoses;
             }
         } else {
-            return diff;
+            return diffOfWins;
         }
     });
-    console.log(`Winner: ${sortedKingdoms[0]}`);
-    for (let gen of sortedGenerals) {
-        console.log(`/\\general: ${gen}`)
-        console.log(`---army: ${result[sortedKingdoms[0]][gen]['army']}`)
-        console.log(`---wins: ${result[sortedKingdoms[0]][gen]['wins']}`)
-        console.log(`---losses: ${result[sortedKingdoms[0]][gen]['losses']}`)
+
+    let winnerKingdom = sortedKingdoms[0];
+    let sortedGenerals = Object.keys(result[winnerKingdom]).filter( e => e !== 'all_kingdom_wins' && e !== 'all_kingdom_losses').sort((a, b) => {
+        return result[winnerKingdom][b]['army'] - result[winnerKingdom][a]['army'];
+    });
+    console.log(`Winner: ${winnerKingdom}`);
+    for (let general of sortedGenerals) {
+        console.log(`/\\general: ${general}`);
+        console.log(`---army: ${result[winnerKingdom][general]['army']}`);
+        console.log(`---wins: ${result[winnerKingdom][general]['wins']}`);
+        console.log(`---losses: ${result[winnerKingdom][general]['losses']}`);
     }
 }
+
 
 
 
@@ -88,7 +81,7 @@ function f(object, matrix) {
 f([{kingdom: "Maiden Way", general: "Merek", army: 5000},
         {kingdom: "Stonegate", general: "Ulric", army: 4900},
         {kingdom: "Stonegate", general: "Doran", army: 70000},
-        {kingdom: "YorkenShire", general: "Quinn", army: 0},
+        {kingdom: "YorkenShire", general: "Quinn", army: 10},
         {kingdom: "YorkenShire", general: "Quinn", army: 2000},
         {kingdom: "Maiden Way", general: "Berinon", army: 100000}],
     [["YorkenShire", "Quinn", "Stonegate", "Ulric"],
